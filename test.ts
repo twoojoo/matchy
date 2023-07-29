@@ -132,6 +132,10 @@ match({ foo: "bar" })
 	.when(property("foo").is("bar")).do(_ => {})
 	.default(_ => { throw Error("property.is") })
 
+match({ foo: "bar" })
+	.when(property("foo").isNot("baz")).do(_ => {})
+	.default(_ => { throw Error("property.isNot") })
+
 match({ foo: { bar: "baz" } })
 	.when(subProperty("foo", "bar").is("baz")).do(_ => {})
 	.default(_ => { throw Error("subProperty.is") })
