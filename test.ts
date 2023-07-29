@@ -1,4 +1,4 @@
-import { all, charAt, contains, elemAtIndex, endsWith, gt, gte, hasLength, inRange, includes, isEmpty, isEven, isOdd, isRedundant, lt, lte, match, some, startsWith } from ".";
+import { all, charAt, contains, elemAtIndex, endsWith, gt, gte, hasLength, hasProperty, hasSubProperty, inRange, includes, isEmpty, isEven, isOdd, isRedundant, lt, lte, match, not, property, some, startsWith, subProperty } from "./";
 
 match(200)
 	.when(gt(200)).do(_ => { throw Error("gt") })
@@ -116,6 +116,26 @@ match("abcdefg")
 	.when(all(startsWith("a"), includes("defgh"))).do(_ => { throw Error("all") })
 	.default(_ => {})
 
+match({ foo: "bar" })
+	.when(hasProperty("foo")).do(_ => {})
+	.default(_ => { throw Error("hasProperty") })
+
+match({ foo: { bar: "baz" } })
+	.when(hasSubProperty("foo", "bar")).do(_ => {})
+	.default(_ => { throw Error("hasSubProperty") })
+
+match({ foo: { bar: "baz" } })
+	.when(not(hasSubProperty("foo", "bar"))).do(_ => { throw Error("hasSubProperty") })
+	.default(_ => {})
+
+match({ foo: "bar" })
+	.when(property("foo").is("bar")).do(_ => {})
+	.default(_ => { throw Error("property.is") })
+
+match({ foo: { bar: "baz" } })
+	.when(subProperty("foo", "bar").is("baz")).do(_ => {})
+	.default(_ => { throw Error("subProperty.is") })
+
 match("abcdefg")
 	.when(some(
 		startsWith("a"), 
@@ -129,3 +149,10 @@ match("abcdefg")
 		includes("defgh")
 	)).do(_ => {})
 	.default(_ => { throw Error("some") })
+
+match("abcdefg")
+	.when(all(
+		startsWith("a"), 
+		includes("defg")
+	)).do(_ => {})
+	.default(_ => { throw Error("all") })

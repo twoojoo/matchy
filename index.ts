@@ -199,11 +199,72 @@ export function charAt<T extends string>(index: number, char: string): Matcher<T
 }
 
 
+// ============= OBJECT OPERATOR ==================
+
+export function hasProperty<T>(key: string): Matcher<T> {
+	return function (val: T) {
+		return (val as any)[key] !== null && (val as any)[key] !== undefined
+	}
+}
+
+export function property<T>(key: string) {
+	return {
+		is(value: any): Matcher<T> {
+			return function (val: T) {
+				return value === (val as any)[key]
+			}
+		}
+	}
+}
+
+export function subProperty<T>(...keys: string[]) {
+	return {
+		is(value: any): Matcher<T> {
+			return function (val: T) {
+				let pointer: any = val
+
+				for (let i = 0; i < keys.length; i++) {
+					if (
+						pointer[keys[i]] === null || 
+						pointer[keys[i]] === undefined
+					) break
+
+					if (i == keys.length - 1 && value === pointer[keys[i]]) {
+						return true
+					}
+
+					pointer = pointer[keys[i]]
+				}
+
+				return false
+			}	
+		}
+	}
+}
+
+export function hasSubProperty<T>(...keys: string[]): Matcher<T> {
+	return function (val: T) {
+		let pointer: any = val
+
+		for (let i = 0; i < keys.length; i++) {
+			if (
+				pointer[keys[i]] === null || 
+				pointer[keys[i]] === undefined
+			) return false
+
+			const key = keys[i]
+			pointer = pointer[key]
+		}
+
+		return true
+	}
+}
+
 // ======== operators ========================0
 
 export function all<T>(...matchers: Matcher<T>[]): Matcher<T> {
 	return function (val: T) {
-		for (let i = 0; i < matchers.length; i++){
+		for (let i = 0; i < matchers.length; i++) {
 			if (!matchers[i](val)) {
 				return false
 			}
@@ -215,12 +276,18 @@ export function all<T>(...matchers: Matcher<T>[]): Matcher<T> {
 
 export function some<T>(...matchers: Matcher<T>[]): Matcher<T> {
 	return function (val: T) {
-		for (let i = 0; i < matchers.length; i++){
+		for (let i = 0; i < matchers.length; i++) {
 			if (!matchers[i](val)) {
 				return true
 			}
 		}
 
 		return false
+	}
+}
+
+export function not<T>(matcher: Matcher<T>): Matcher<T> {
+	return function (val: T) {
+		return !matcher(val)
 	}
 }
