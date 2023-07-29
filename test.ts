@@ -136,6 +136,10 @@ match({ foo: { bar: "baz" } })
 	.when(subProperty("foo", "bar").is("baz")).do(_ => {})
 	.default(_ => { throw Error("subProperty.is") })
 
+match({ foo: { bar: "baz" } })
+	.when(subProperty("foo", "bar").isNot("buz")).do(_ => {})
+	.default(_ => { throw Error("subProperty.isNot") })
+
 match("abcdefg")
 	.when(some(
 		startsWith("a"), 

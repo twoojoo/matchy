@@ -213,6 +213,11 @@ export function property<T>(key: string) {
 			return function (val: T) {
 				return value === (val as any)[key]
 			}
+		},
+		isNot(value: any): Matcher<T> {
+			return function (val: T) {
+				return value !== (val as any)[key]
+			}
 		}
 	}
 }
@@ -237,6 +242,26 @@ export function subProperty<T>(...keys: string[]) {
 				}
 
 				return false
+			}	
+		},
+		isNot(value: any): Matcher<T> {
+			return function (val: T) {
+				let pointer: any = val
+
+				for (let i = 0; i < keys.length; i++) {
+					if (
+						pointer[keys[i]] === null || 
+						pointer[keys[i]] === undefined
+					) break
+
+					if (i == keys.length - 1 && value === pointer[keys[i]]) {
+						return false
+					}
+
+					pointer = pointer[keys[i]]
+				}
+
+				return true
 			}	
 		}
 	}
