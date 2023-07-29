@@ -164,3 +164,5 @@ match("abcdefg")
 		includes("defg")
 	)).do(_ => {})
 	.default(_ => { throw Error("all") })
+
+console.log("test done")
