@@ -147,7 +147,7 @@ match({ foo: { bar: "baz" } })
 match("abcdefg")
 	.when(some(
 		startsWith("a"), 
-		includes("defgh")
+		includes("defg")
 	)).do(_ => {})
 	.default(_ => { throw Error("some") })
 
@@ -155,8 +155,8 @@ match("abcdefg")
 	.when(some(
 		startsWith("b"), 
 		includes("defgh")
-	)).do(_ => {})
-	.default(_ => { throw Error("some") })
+	)).do(_ => { throw Error("some") })
+	.default(_ => {})
 
 match("abcdefg")
 	.when(all(

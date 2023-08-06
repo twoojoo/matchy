@@ -2,7 +2,6 @@
   "name": "matchy",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "npm run build && node dist/test.js",
     "build": "rm -rf ./dist && tsc"

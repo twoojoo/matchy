@@ -7,7 +7,7 @@ export type Matchable =
 
 export type Matcher<T> = (val: T) => boolean 
 
-export function match<T extends Matchable, R = any>(val: T) {
+export function match<R = any, T extends Matchable = any>(val: T) {
 	let matched = false
 	let result: R
 	let asyncCallback: (val: T) => R | Promise<R>
@@ -15,7 +15,7 @@ export function match<T extends Matchable, R = any>(val: T) {
 	function when(matcher: T | Matcher<T>) {
 		return {
 			do(callback: (val: T) => R | Promise<R>) {
-				if (typeof matcher == "function" && matcher(val) || val === matcher) {
+				if (!matched && typeof matcher == "function" && matcher(val) || val === matcher) {
 					matched = true
 					if (isPromise(callback)) {
 						asyncCallback = callback as (val: T) => Promise<R>
@@ -302,7 +302,7 @@ export function all<T>(...matchers: Matcher<T>[]): Matcher<T> {
 export function some<T>(...matchers: Matcher<T>[]): Matcher<T> {
 	return function (val: T) {
 		for (let i = 0; i < matchers.length; i++) {
-			if (!matchers[i](val)) {
+			if (matchers[i](val as any)) {
 				return true
 			}
 		}
